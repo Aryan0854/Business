@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface PortfolioPreviewModalProps {
   isOpen: boolean;
@@ -7,7 +8,6 @@ interface PortfolioPreviewModalProps {
     title: string;
     category: string;
     images: string[];
-    videos?: string[];
     description: string;
   };
 }
@@ -16,24 +16,56 @@ export const PortfolioPreviewModal = ({ isOpen, onClose, portfolioData }: Portfo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.8, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">{portfolioData.title}</h2>
-            <button
+            <motion.h2
+              className="text-2xl font-bold"
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+            >
+              {portfolioData.title}
+            </motion.h2>
+            <motion.button
               onClick={onClose}
               className="text-gray-400 hover:text-white transition-colors"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <X className="w-6 h-6" />
-            </button>
+            </motion.button>
           </div>
           
           <div className="space-y-6">
             {/* Image Gallery */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            >
               {portfolioData.images.map((image, index) => (
-                <div key={index} className="relative group">
+                <motion.div
+                  key={index}
+                  className="relative group"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1, duration: 0.3 }}
+                  whileHover={{ scale: 1.02 }}
+                >
                   <img
                     src={image}
                     alt={`${portfolioData.title} preview ${index + 1}`}
@@ -49,36 +81,23 @@ export const PortfolioPreviewModal = ({ isOpen, onClose, portfolioData }: Portfo
                       View Full Size
                     </span>
                   </a>
-                </div>
+                </motion.div>
               ))}
-            </div>
-
-            {/* Video Gallery */}
-            {portfolioData.videos && portfolioData.videos.length > 0 && (
-              <div className="space-y-4 mt-6">
-                <h3 className="text-xl font-semibold">Project Videos</h3>
-                <div className="grid grid-cols-1 gap-4">
-                  {portfolioData.videos.map((video, index) => (
-                    <div key={index} className="relative rounded-lg overflow-hidden">
-                      <video
-                        controls
-                        className="w-full rounded-lg"
-                        src={video}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            </motion.div>
 
             {/* Description */}
-            <div className="mt-6">
+            <motion.div
+              className="mt-6"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+            >
               <h3 className="text-xl font-semibold mb-2">Description</h3>
               <p className="text-gray-400">{portfolioData.description}</p>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }; 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
+import { motion } from 'framer-motion';
 
 export const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,19 +16,33 @@ export const ContactForm: React.FC = () => {
 
     try {
       await emailjs.send(
-        'service_c78ma62',
-        'template_3hu2gij',
+        'service_fuf8kwk',
+        'template_r6i5vrq',
         {
-          ...formData,
+          from_name: formData.from_name,
+          from_email: formData.from_email,
+          message: formData.message,
           to_email: 'aryanofficial0854@gmail.com'
         },
-        'QWv80P5wF32KqV6o3' // You'll need to replace this with your actual public key
+        'oIY2mFp-BzRWaDPij'
       );
+
+      // Send auto-reply
+      await emailjs.send(
+        'service_fuf8kwk',
+        'template_58xyr4g',
+        {
+          from_name: formData.from_name,
+          from_email: formData.from_email
+        },
+        'oIY2mFp-BzRWaDPij'
+      );
+
       setStatus('success');
       setFormData({ from_name: '', from_email: '', message: '' });
     } catch (error) {
       setStatus('error');
-      console.error('Error sending email:', error);
+      console.error('EmailJS Error:', error);
     }
   };
 
@@ -40,8 +55,20 @@ export const ContactForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
+    <motion.form
+      onSubmit={handleSubmit}
+      className="space-y-6"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      viewport={{ once: true }}
+    >
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        viewport={{ once: true }}
+      >
         <label htmlFor="from_name" className="block text-sm font-medium text-gray-300 mb-2">
           Name
         </label>
@@ -55,8 +82,13 @@ export const ContactForm: React.FC = () => {
           className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Your name"
         />
-      </div>
-      <div>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        viewport={{ once: true }}
+      >
         <label htmlFor="from_email" className="block text-sm font-medium text-gray-300 mb-2">
           Email
         </label>
@@ -70,8 +102,13 @@ export const ContactForm: React.FC = () => {
           className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="your@email.com"
         />
-      </div>
-      <div>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        viewport={{ once: true }}
+      >
         <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
           Message
         </label>
@@ -85,8 +122,8 @@ export const ContactForm: React.FC = () => {
           className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Your message"
         />
-      </div>
-      <button
+      </motion.div>
+      <motion.button
         type="submit"
         disabled={status === 'sending'}
         className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${
@@ -94,15 +131,32 @@ export const ContactForm: React.FC = () => {
             ? 'bg-gray-600 cursor-not-allowed'
             : 'bg-blue-600 hover:bg-blue-700'
         }`}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.2 }}
       >
         {status === 'sending' ? 'Sending...' : 'Send Message'}
-      </button>
+      </motion.button>
       {status === 'success' && (
-        <p className="text-green-500 text-center">Message sent successfully!</p>
+        <motion.p
+          className="text-green-500 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          Thank you for your message! I will get back to you shortly.
+        </motion.p>
       )}
       {status === 'error' && (
-        <p className="text-red-500 text-center">Failed to send message. Please try again.</p>
+        <motion.p
+          className="text-red-500 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          Failed to send message. Please try again later.
+        </motion.p>
       )}
-    </form>
+    </motion.form>
   );
 };
